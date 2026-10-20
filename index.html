@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffe3ea">
+<title>a little something for you 💌</title>
+<meta property="og:title" content="a little something for you 💌">
+<meta property="og:description" content="open me 🎀">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Fredoka:wght@400;500;600;700&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#6b3f4a; --ink-soft:rgba(107,63,74,.8);
+  --paper:#fffaf3; --blush:#ffe3ea;
+  --pink:#ffc6d3; --pink2:#ff9fb8; --rose:#f2708f;
+  --butter:#ffe9a6; --mint:#c4ead8; --lav:#ddd0fb; --sky:#cfe0fb;
+  --display:'Cherry Bomb One','Fredoka',system-ui,sans-serif;
+  --round:'Fredoka',system-ui,-apple-system,sans-serif;
+  --hand:'Gaegu','Fredoka',cursive;
+  /* die-cut paper edge for boxes, and the same look for irregular shapes */
+  --cut:0 0 0 6px #fff,0 0 0 8px rgba(214,160,176,.45),0 18px 26px -8px rgba(140,60,85,.35);
+  --cutf:drop-shadow(4px 0 0 #fff) drop-shadow(-4px 0 0 #fff) drop-shadow(0 4px 0 #fff) drop-shadow(0 -4px 0 #fff) drop-shadow(0 14px 14px rgba(140,60,85,.28));
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--blush);color:var(--ink);font-family:var(--round);-webkit-font-smoothing:antialiased;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;overscroll-behavior:none}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+
+/* ---------- background: polka-dot paper, scalloped valance, mint hills ---------- */
+.bg{position:fixed;inset:0;z-index:0;background-color:var(--blush);
+  background-image:radial-gradient(ellipse 85% 60% at 50% 45%,rgba(255,250,245,.8),transparent 75%),
+    radial-gradient(rgba(255,255,255,.95) 2.3px,transparent 2.9px),radial-gradient(rgba(255,255,255,.95) 2.3px,transparent 2.9px);
+  background-size:auto,28px 28px,28px 28px;background-position:0 0,0 0,14px 14px}
+.bg::before{content:'';position:absolute;left:-8px;right:-8px;top:0;height:22px;
+  background:radial-gradient(circle at 16px 0,#ffb3c7 15px,var(--ink) 15.5px 18px,transparent 18.6px) 0 0/32px 22px repeat-x;
+  filter:drop-shadow(0 4px 3px rgba(140,60,85,.15))}
+.bg::after{content:'';position:absolute;left:-20px;right:-20px;bottom:0;height:30px;
+  background:radial-gradient(circle at 28px 100%,#c4ead8 26px,var(--ink) 26.5px 29px,transparent 29.6px) 0 100%/56px 30px repeat-x;
+  filter:drop-shadow(0 -3px 3px rgba(140,60,85,.12))}
+.grain{position:fixed;inset:0;z-index:55;pointer-events:none;opacity:.16;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .35 0 0 0 0 .4 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+canvas.layer{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#ambient{z-index:1}
+#fx{z-index:60}
+
+/* ---------- screens ---------- */
+.screen{position:fixed;inset:0;z-index:2;display:grid;place-items:center;
+  padding:max(30px,env(safe-area-inset-top)) 20px max(34px,env(safe-area-inset-bottom));
+  opacity:0;visibility:hidden;transform:translateY(24px) scale(.97);
+  transition:opacity .6s ease,transform .7s cubic-bezier(.3,1.4,.5,1),visibility 0s linear .7s}
+.screen.active{opacity:1;visibility:visible;transform:none;
+  transition:opacity .6s ease .2s,transform .7s cubic-bezier(.3,1.4,.5,1) .2s}
+.stack{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;width:100%}
+
+/* ---------- type ---------- */
+.sticker-text{font-family:var(--display);font-weight:400;color:var(--pink2);line-height:1.05;letter-spacing:.01em;padding:.12em .2em;
+  text-shadow:0.045em 0 0 var(--ink),0.042em 0.017em 0 var(--ink),0.032em 0.032em 0 var(--ink),0.017em 0.042em 0 var(--ink),0 0.045em 0 var(--ink),-0.017em 0.042em 0 var(--ink),-0.032em 0.032em 0 var(--ink),-0.042em 0.017em 0 var(--ink),-0.045em 0 0 var(--ink),-0.042em -0.017em 0 var(--ink),-0.032em -0.032em 0 var(--ink),-0.017em -0.042em 0 var(--ink),-0 -0.045em 0 var(--ink),0.017em -0.042em 0 var(--ink),0.032em -0.032em 0 var(--ink),0.042em -0.017em 0 var(--ink),0.120em 0 0 #fff,0.116em 0.031em 0 #fff,0.104em 0.060em 0 #fff,0.085em 0.085em 0 #fff,0.060em 0.104em 0 #fff,0.031em 0.116em 0 #fff,0 0.120em 0 #fff,-0.031em 0.116em 0 #fff,-0.060em 0.104em 0 #fff,-0.085em 0.085em 0 #fff,-0.104em 0.060em 0 #fff,-0.116em 0.031em 0 #fff,-0.120em 0 0 #fff,-0.116em -0.031em 0 #fff,-0.104em -0.060em 0 #fff,-0.085em -0.085em 0 #fff,-0.060em -0.104em 0 #fff,-0.031em -0.116em 0 #fff,-0 -0.120em 0 #fff,0.031em -0.116em 0 #fff,0.060em -0.104em 0 #fff,0.085em -0.085em 0 #fff,0.104em -0.060em 0 #fff,0.116em -0.031em 0 #fff,0 .13em .12em rgba(107,63,74,.28)}
+.st-butter{color:#ffe08a}.st-mint{color:#a8e0c6}.st-lav{color:#cdbbff}.st-sky{color:#b4d3fa}
+.t-xl{font-size:clamp(60px,18vw,92px)}
+.t-lg{font-size:clamp(44px,12.5vw,60px)}
+.t-md{font-size:clamp(34px,9.6vw,44px)}
+.eyebrow{font:700 clamp(22px,6.2vw,27px)/1.1 var(--hand);color:var(--ink-soft)}
+.h{font:700 clamp(23px,6.4vw,28px)/1.15 var(--round);color:var(--ink);margin:14px 0 6px}
+.body{font:400 16px/1.55 var(--round);color:var(--ink-soft)}
+.hand{font-family:var(--hand);font-weight:700}
+.eyebrow,.hint,.signoff,.letter-text,.feedback,.link,.gc-for,.env-letter b{letter-spacing:-.02em}
+.signoff{font:700 25px var(--hand);color:var(--rose);margin-top:8px}
+.level-tag{display:inline-block;font:600 11px var(--round);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);
+  background:var(--butter);border:2.5px solid var(--ink);padding:5px 12px;border-radius:999px;rotate:-2deg;box-shadow:0 2px 0 var(--ink)}
+.hint{font:700 23px var(--hand);color:var(--ink-soft);animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.45}}
+.squiggle{display:block;margin:4px auto 10px}
+
+/* ---------- paper cards with washi tape ---------- */
+.card{position:relative;width:min(400px,100%);padding:34px 24px 28px;text-align:center;border-radius:26px;
+  background:var(--paper);border:3px solid var(--ink);box-shadow:var(--cut);rotate:var(--tilt,-1deg)}
+.card::before{content:'';position:absolute;top:-17px;left:50%;width:124px;height:30px;translate:-50% 0;rotate:-4deg;opacity:.93;
+  background:var(--tape,repeating-linear-gradient(-45deg,#ffb3c7 0 7px,#ffdbe4 7px 14px));
+  clip-path:polygon(0 0,100% 0,97% 20%,100% 40%,97% 60%,100% 80%,97% 100%,0 100%,3% 80%,0 60%,3% 40%,0 20%)}
+.card.no-tape::before{display:none}
+.tape-mint{--tape:radial-gradient(#fff 2.2px,transparent 2.8px) 0 0/11px 11px,#b6e2cc}
+.tape-lav{--tape:linear-gradient(90deg,rgba(255,255,255,.55) 50%,transparent 0) 0 0/12px 12px,linear-gradient(rgba(255,255,255,.55) 50%,transparent 0) 0 0/12px 12px,#cbbcf6}
+.tape-butter{--tape:repeating-linear-gradient(90deg,#ffde80 0 7px,#fff2c2 7px 14px)}
+.card-bow{position:absolute;top:-46px;left:50%;translate:-50% 0;rotate:-6deg}
+
+/* ---------- buttons ---------- */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:13px 30px;
+  border:3px solid var(--ink);border-radius:999px;cursor:pointer;color:var(--ink);font:600 18px var(--round);letter-spacing:.01em;
+  background:var(--pink2);box-shadow:0 5px 0 var(--ink),inset 0 3px 0 rgba(255,255,255,.55);transition:transform .12s ease,box-shadow .12s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--ink),inset 0 3px 0 rgba(255,255,255,.55)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink),inset 0 3px 0 rgba(255,255,255,.55)}
+.btn.ghost{background:var(--paper)}
+.btn .icon{display:inline-block;margin:-12px -10px -12px -2px}
+.link{background:none;border:0;cursor:pointer;font:700 22px var(--hand);color:var(--ink-soft);padding:8px;margin-top:2px;
+  text-decoration:underline wavy rgba(242,112,143,.6);text-underline-offset:6px}
+.mute{position:fixed;top:max(16px,env(safe-area-inset-top));right:14px;z-index:80;width:44px;height:44px;border-radius:50%;
+  border:2.5px solid var(--ink);background:var(--paper);box-shadow:0 3px 0 var(--ink);display:grid;place-items:center;cursor:pointer}
+.mute:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.later{opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .6s,transform .6s}
+.later.show{opacity:1;transform:none;pointer-events:auto}
+.icon{display:block}
+
+/* ---------- envelope ---------- */
+.fade-on-open{transition:opacity .5s,transform .5s}
+.opened .fade-on-open{opacity:0;transform:translateY(-8px)}
+.envelope{position:relative;width:min(290px,74vw);aspect-ratio:1.5;margin:60px 0 14px;border:0;padding:0;background:none;cursor:pointer;
+  perspective:900px;animation:bob 4s ease-in-out infinite;filter:var(--cutf)}
+.envelope>span{position:absolute;display:block}
+.envelope svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.envelope svg *{stroke:var(--ink);stroke-width:3px;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.env-back,.env-sides,.env-bottom,.env-flap{inset:0}
+.env-back{z-index:0}
+.env-letter{left:7%;right:7%;top:7%;bottom:9%;z-index:1;border-radius:8px;border:2.5px solid var(--ink);
+  background:var(--paper) repeating-linear-gradient(transparent 0 15px,rgba(242,112,143,.22) 15px 17px);
+  display:flex!important;flex-direction:column;align-items:center;gap:2px;padding-top:6%;
+  transition:transform 1s cubic-bezier(.2,.9,.3,1.15) .45s}
+.env-letter b{font:700 30px/1 var(--hand);color:var(--rose)}
+.env-sides{z-index:2}
+.env-bottom{z-index:3}
+.env-flap{z-index:4;transform-origin:top;transition:transform .6s ease,z-index 0s linear .3s}
+.env-seal{left:50%;top:59%;z-index:5;transform:translate(-50%,-50%);transition:.4s}
+.envelope.open{animation:none}
+.envelope.open .env-flap{transform:rotateX(180deg);z-index:0}
+.envelope.open .env-letter{transform:translateY(-60%)}
+.envelope.open .env-seal{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(40deg)}
+@keyframes bob{50%{transform:translateY(-10px)}}
+
+/* ---------- letter ---------- */
+.letter-text{font:700 23px/34px var(--hand);color:var(--ink);min-height:170px;
+  background:repeating-linear-gradient(transparent 0 31px,rgba(242,112,143,.25) 31px 33px,transparent 33px 34px)}
+.letter-text.typing::after{content:'';display:inline-block;width:2.5px;height:.9em;margin-left:2px;vertical-align:-2px;background:var(--ink);animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- catch game ---------- */
+#s-catch{display:block;padding:0}
+#game{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:none}
+#game.shake{animation:shake .4s}
+.hud{position:absolute;z-index:3;top:max(16px,env(safe-area-inset-top));left:14px;right:68px;max-width:520px;margin:0 auto;
+  display:flex;align-items:center;gap:10px;padding:7px 14px 7px 8px;border-radius:999px;
+  background:var(--paper);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
+.hud .level-tag{rotate:0deg;box-shadow:none;padding:3px 9px;font-size:9.5px;white-space:nowrap}
+.bar{flex:1;height:15px;border-radius:99px;border:2.5px solid var(--ink);background:#fff;overflow:hidden}
+.bar-fill{height:100%;width:0;background:repeating-linear-gradient(-45deg,#ff9fb8 0 7px,#ffc6d3 7px 14px);background-size:19.8px 19.8px;
+  animation:stripes .9s linear infinite;transition:width .4s cubic-bezier(.3,1.4,.5,1)}
+@keyframes stripes{to{background-position:19.8px 0}}
+.count{font:400 18px var(--display);color:var(--ink);min-width:46px;text-align:right;font-variant-numeric:tabular-nums}
+.overlay{position:absolute;inset:0;z-index:4;display:grid;place-items:center;padding:24px;background:rgba(255,227,234,.45);transition:opacity .5s}
+.overlay.hidden{opacity:0;pointer-events:none}
+.overlay .btn{margin-top:20px}
+.hero-icon{margin:4px auto -6px;animation:bob 3.2s ease-in-out infinite}
+.icon-row{display:flex;justify-content:center;margin:8px 0 2px}
+.icon-row .icon{margin:0 -4px;animation:bob 2.8s ease-in-out infinite}
+.icon-row .icon:nth-child(odd){rotate:-8deg}
+.icon-row .icon:nth-child(even){rotate:7deg;animation-delay:-1.4s}
+.icon.inline{display:inline-block;vertical-align:middle;margin:-10px -4px -8px -2px}
+
+/* ---------- quiz ---------- */
+.q-body{transition:opacity .35s,transform .35s}
+.q-body.swap{opacity:0;transform:translateX(-16px)}
+.question{font:500 19px/1.35 var(--round);color:var(--ink);margin:8px 0 18px;min-height:2.7em;display:flex;align-items:center;justify-content:center}
+.options{display:grid;gap:12px}
+.opt{font:500 16px var(--round);padding:12px 16px;border-radius:16px;border:2.5px solid var(--ink);background:var(--c,#fff);color:var(--ink);
+  cursor:pointer;box-shadow:0 4px 0 var(--ink);transition:transform .12s,box-shadow .12s,background .3s,color .3s,opacity .3s;animation:pop-in .5s both}
+.opt:nth-child(1){--c:var(--mint)}.opt:nth-child(2){--c:var(--lav)}.opt:nth-child(3){--c:var(--butter)}.opt:nth-child(4){--c:var(--sky)}
+.opt:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.opt:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.opt.right{background:var(--pink2)}
+.opt.wrong{animation:shake .45s;background:#efe6e8;color:rgba(107,63,74,.45);text-decoration:line-through;
+  border-color:rgba(107,63,74,.4);box-shadow:0 2px 0 rgba(107,63,74,.4)}
+.opt:disabled{cursor:default}
+.feedback{font:700 24px/1.15 var(--hand);color:var(--rose);min-height:1.3em;margin-top:16px}
+@keyframes pop-in{from{opacity:0;transform:translateY(10px) scale(.97)}}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+.typed{display:flex;gap:8px;animation:pop-in .5s both}
+.typed-input{flex:1;width:0;min-width:0;font:500 17px var(--round);padding:12px 16px;border-radius:16px;border:2.5px solid var(--ink);
+  background:#fff;color:var(--ink);outline:none;user-select:text;-webkit-user-select:text;box-shadow:inset 0 3px 0 rgba(107,63,74,.08);
+  transition:box-shadow .2s,background .3s}
+.typed-input::placeholder{color:rgba(107,63,74,.4)}
+.typed-input:focus{box-shadow:inset 0 3px 0 rgba(107,63,74,.08),0 0 0 4px rgba(255,159,184,.45)}
+.typed-input.nope{animation:shake .45s}
+.typed-input.right{background:var(--pink2)}
+.typed .btn{padding:0 18px;border-radius:16px;font-size:16px;box-shadow:0 4px 0 var(--ink)}
+
+/* ---------- do you love me ---------- */
+.yn{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:24px;min-height:70px}
+#yes{transition:transform .35s cubic-bezier(.3,1.6,.5,1),box-shadow .12s}
+.no-wrap{display:inline-flex;flex-direction:column;align-items:center}
+.no-note{display:none;margin-top:10px;padding:3px 11px 1px;font:700 20px/1.1 var(--hand);letter-spacing:-.02em;color:var(--ink);white-space:nowrap;
+  background:var(--paper);border:2px solid var(--ink);border-radius:10px;box-shadow:0 2px 0 var(--ink);rotate:-3deg;pointer-events:none}
+.no-note.show{display:block}
+.runaway{position:fixed!important;z-index:70;margin:0;transition:left .35s cubic-bezier(.3,1.4,.5,1),top .35s cubic-bezier(.3,1.4,.5,1)}
+
+/* ---------- gift box ---------- */
+.gift{position:relative;width:210px;height:236px;margin:44px 0 18px;cursor:pointer}
+.gift::after{content:'';position:absolute;bottom:-18px;left:14%;right:14%;height:20px;border-radius:50%;background:radial-gradient(rgba(107,63,74,.25),transparent 70%)}
+.rays{position:absolute;left:50%;top:62%;width:600px;height:600px;margin:-300px 0 0 -300px;opacity:.75;transform:scale(.55);
+  transition:opacity .8s ease,transform 1.4s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.rays::before{content:'';position:absolute;inset:0;border-radius:50%;
+  background:repeating-conic-gradient(#fff1b3 0deg 10deg,rgba(255,255,255,.95) 10deg 20deg);
+  -webkit-mask:radial-gradient(circle,#000 10%,transparent 66%);mask:radial-gradient(circle,#000 10%,transparent 66%);animation:spin 20s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gift-body{position:absolute;inset:0;transform-origin:50% 100%;animation:bob 3.4s ease-in-out infinite;filter:var(--cutf)}
+.gift-body.wiggle{animation:wiggle .55s ease}
+@keyframes wiggle{0%,100%{transform:none}20%{transform:rotate(calc(var(--w) * -1)) scale(1.05)}40%{transform:rotate(var(--w)) scale(1.05)}
+  60%{transform:rotate(calc(var(--w) * -.6))}80%{transform:rotate(calc(var(--w) * .3))}}
+.box{position:absolute;left:16px;right:16px;bottom:0;height:150px;border:3px solid var(--ink);border-radius:8px 8px 18px 18px;
+  background:radial-gradient(rgba(255,255,255,.9) 3.4px,transparent 4px) 0 0/22px 22px,var(--pink);box-shadow:inset 0 -12px 0 rgba(255,143,171,.25)}
+.box::before,.lid::before{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:34px;transform:translateX(-50%);
+  background:var(--butter);border-left:3px solid var(--ink);border-right:3px solid var(--ink)}
+.lid{position:absolute;left:0;right:0;top:58px;height:44px;z-index:2;border:3px solid var(--ink);border-radius:12px;background:var(--pink2);
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.45);transition:transform 1.1s cubic-bezier(.2,.8,.2,1),opacity 1s ease .2s}
+.bow{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%)}
+.gift.open .lid{transform:translate(70px,-340px) rotate(38deg);opacity:0}
+.gift.open .rays{opacity:1;transform:scale(1.15)}
+.gift.open .gift-body{animation:none}
+
+/* ---------- gift card + scratch ---------- */
+.giftcard{position:relative;width:min(330px,82vw);aspect-ratio:1.586;border-radius:20px;overflow:hidden;display:grid;place-items:center;
+  border:3px solid var(--ink);background-color:#fff;
+  background-image:linear-gradient(90deg,rgba(255,159,184,.38) 50%,transparent 0),linear-gradient(rgba(255,159,184,.38) 50%,transparent 0);
+  background-size:24px 24px;box-shadow:var(--cut)}
+.gc-label{width:70%;padding:9px 10px 9px;border-radius:14px;background:var(--paper);border:2.5px solid var(--ink);box-shadow:0 3px 0 var(--ink)}
+.gc-brand{font:600 15px var(--round);letter-spacing:.07em;color:var(--ink)}
+.gc-amount{font-size:clamp(40px,12vw,50px);padding:0 .15em}
+.gc-sub{font:600 9.5px var(--round);letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft)}
+.gc-bow{position:absolute;top:-4px;left:-4px;rotate:-14deg}
+.gc-for{position:absolute;bottom:9px;right:10px;padding:2px 14px 0;font:700 21px var(--hand);color:var(--ink);background:#bfe6d2;rotate:-4deg;
+  clip-path:polygon(0 0,100% 0,96% 25%,100% 50%,96% 75%,100% 100%,0 100%,4% 75%,0 50%,4% 25%)}
+.gc-shine{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 47%,rgba(255,240,246,.45) 52%,transparent 62%);
+  background-size:260% 100%;animation:shine 4s ease-in-out infinite}
+@keyframes shine{0%{background-position:130% 0}60%,100%{background-position:-60% 0}}
+.title-swap{display:grid;place-items:center}
+.title-swap>*{grid-area:1/1;transition:opacity .5s,transform .8s cubic-bezier(.3,1.6,.5,1)}
+#reveal-post{opacity:0;transform:scale(.4) rotate(-8deg)}
+.revealed #reveal-pre{opacity:0;transform:translateY(-20px) scale(.9)}
+.revealed #reveal-post{opacity:1;transform:rotate(-3deg)}
+.float{perspective:1000px}
+.revealed .float{animation:bob 5s ease-in-out infinite}
+.revealed .tilt{animation:sway 7s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotateY(-10deg) rotateX(5deg) rotate(-1deg)}50%{transform:rotateY(10deg) rotateX(-4deg) rotate(1deg)}}
+.scratch-wrap{position:relative;border-radius:20px}
+#scratch{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);border-radius:17px;touch-action:none;cursor:crosshair;transition:opacity .9s ease}
+#scratch.gone{opacity:0;pointer-events:none}
+.revealed .giftcard{animation:cardpop 1.1s cubic-bezier(.3,1.6,.5,1)}
+@keyframes cardpop{0%{transform:scale(.96)}40%{transform:scale(1.07)}100%{transform:none}}
+.finale-zone{position:relative;display:grid;justify-items:center;width:100%}
+.finale-zone .hint{position:absolute;top:6px;left:0;right:0;transition:opacity .4s}
+.revealed .finale-zone .hint{opacity:0;animation:none}
+.finale{display:flex;flex-direction:column;align-items:center;gap:6px;visibility:hidden;max-width:380px}
+.revealed .finale{visibility:visible}
+.finale>*{opacity:0}
+.revealed .finale>*{animation:rise .9s cubic-bezier(.3,1.5,.5,1) both}
+.revealed .finale>:nth-child(1){animation-delay:.9s}
+.revealed .finale>:nth-child(2){animation-delay:1.3s}
+.revealed .finale>:nth-child(3){animation-delay:2.2s}
+@keyframes rise{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
+.final-line{display:flex;align-items:center;justify-content:center;gap:2px;font:700 clamp(25px,7.2vw,31px)/1.1 var(--round);color:var(--ink)}
+.final-line .icon{animation:mail 1.8s ease-in-out infinite}
+@keyframes mail{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-10deg)}50%{transform:translateY(0) rotate(0)}75%{transform:translateY(-3px) rotate(8deg)}}
+
+@media (max-height:680px){.envelope{margin-top:44px}.gift{margin:24px 0 10px}.t-xl{font-size:62px}.letter-text{min-height:136px}}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<canvas id="ambient" class="layer"></canvas>
+<div class="grain"></div>
+<canvas id="fx" class="layer"></canvas>
+<button class="mute" id="mute" aria-label="toggle sound"></button>
+
+<!-- envelope -->
+<section class="screen active" id="s-envelope">
+  <div class="stack" id="env-stack">
+    <p class="eyebrow fade-on-open">a little something for</p>
+    <h1 class="sticker-text t-xl fade-on-open" data-name style="rotate:-3deg"></h1>
+    <button class="envelope" id="envelope" aria-label="open the envelope">
+      <span class="env-back"><svg viewBox="0 0 300 200" preserveAspectRatio="none"><rect x="0" y="0" width="300" height="200" rx="10" fill="#f9a6bd"/></svg></span>
+      <span class="env-letter"><b>for you</b><canvas class="icon" data-icon="heart" data-size="24"></canvas></span>
+      <span class="env-sides"><svg viewBox="0 0 300 200" preserveAspectRatio="none"><path d="M0 4 L150 112 L300 4 L300 190 Q300 200 290 200 L10 200 Q0 200 0 190 Z" fill="#ffd0dc"/></svg></span>
+      <span class="env-bottom"><svg viewBox="0 0 300 200" preserveAspectRatio="none"><path d="M6 200 L150 98 L294 200 Z" fill="#ffbfd0"/></svg></span>
+      <span class="env-flap"><svg viewBox="0 0 300 200" preserveAspectRatio="none"><path d="M0 0 L300 0 L150 118 Z" fill="#ffb0c5"/></svg></span>
+      <span class="env-seal"><canvas class="icon" data-icon="heart" data-size="48"></canvas></span>
+    </button>
+    <p class="hint fade-on-open">tap to open</p>
+  </div>
+</section>
+
+<!-- letter -->
+<section class="screen" id="s-letter">
+  <div class="card no-tape" id="letter-card" style="--tilt:-1.2deg">
+    <canvas class="icon card-bow" data-icon="bow" data-size="74"></canvas>
+    <p class="sticker-text t-lg">Happy Birthday</p>
+    <p class="sticker-text t-md st-butter" data-name style="rotate:-2deg"></p>
+    <svg class="squiggle" viewBox="0 0 124 14" width="124" height="14"><path d="M3 7 Q10 1 17 7 T31 7 T45 7 T59 7 T73 7 T87 7 T101 7 T115 7" fill="none" stroke="#ff9fb8" stroke-width="3.5" stroke-linecap="round"/></svg>
+    <p class="letter-text" id="letter-text"></p>
+    <div class="later" id="letter-more">
+      <p class="signoff">— love, <span data-from></span></p>
+      <button class="btn" data-go="s-catch" style="margin-top:18px">let's play!</button>
+    </div>
+  </div>
+</section>
+
+<!-- level 1: catch -->
+<section class="screen" id="s-catch">
+  <canvas id="game"></canvas>
+  <div class="hud">
+    <span class="level-tag">level 1</span>
+    <div class="bar"><div class="bar-fill" id="catch-fill"></div></div>
+    <span class="count"><span id="catch-count">0</span>/<span data-target></span></span>
+  </div>
+  <div class="overlay" id="catch-intro">
+    <div class="card tape-butter">
+      <span class="level-tag">level 1 of 3</span>
+      <canvas class="icon hero-icon" data-icon="bag" data-size="92"></canvas>
+      <h3 class="h" style="margin-top:0">Fill your bag</h3>
+      <p class="body">Drag to catch <b data-target></b> of your favorite things</p>
+      <div class="icon-row">
+        <canvas class="icon" data-icon="cheese" data-size="40"></canvas>
+        <canvas class="icon" data-icon="shirley" data-size="40"></canvas>
+        <canvas class="icon" data-icon="tickets" data-size="40"></canvas>
+        <canvas class="icon" data-icon="sewing" data-size="40"></canvas>
+        <canvas class="icon" data-icon="earrings" data-size="40"></canvas>
+        <canvas class="icon" data-icon="hotpot" data-size="40"></canvas>
+      </div>
+      <p class="body">but dodge the grumpy clouds <canvas class="icon inline" data-icon="cloud" data-size="30"></canvas></p>
+      <button class="btn" id="catch-start">start</button>
+    </div>
+  </div>
+  <div class="overlay hidden" id="catch-done">
+    <div class="card" style="--tilt:1deg">
+      <canvas class="icon hero-icon" data-icon="bag" data-size="92"></canvas>
+      <p class="sticker-text t-lg st-mint" style="rotate:-3deg">perfect!</p>
+      <p class="body">your bag is officially full <canvas class="icon inline" data-icon="heart" data-size="24"></canvas></p>
+      <button class="btn" data-go="s-quiz">next level →</button>
+    </div>
+  </div>
+</section>
+
+<!-- level 2: quiz -->
+<section class="screen" id="s-quiz">
+  <div class="card tape-mint" style="--tilt:.8deg">
+    <span class="level-tag">level 2 of 3 · <span id="q-num">1</span>/<span id="q-total"></span></span>
+    <h3 class="h">How well do you know us?</h3>
+    <div class="q-body" id="q-body">
+      <p class="question" id="q-text"></p>
+      <div class="options" id="q-options"></div>
+    </div>
+    <p class="feedback" id="q-feedback"></p>
+  </div>
+</section>
+
+<!-- level 3: do you love me -->
+<section class="screen" id="s-love">
+  <div class="card tape-lav" style="--tilt:-1.2deg">
+    <span class="level-tag">level 3 of 3</span>
+    <p class="sticker-text t-md" id="love-title" style="margin-top:10px">Do you love me?</p>
+    <p class="hint" id="love-sub" style="animation:none">(choose wisely)</p>
+    <div class="yn">
+      <button class="btn" id="yes">yes <canvas class="icon" data-icon="heart" data-size="24"></canvas></button>
+      <div class="no-wrap" id="no-wrap"><button class="btn ghost" id="no">no</button><span class="no-note" id="no-note"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- gift box -->
+<section class="screen" id="s-gift">
+  <div class="stack">
+    <p class="eyebrow">all levels complete!</p>
+    <p class="sticker-text t-lg st-lav" style="rotate:-3deg;margin-top:-6px">your present</p>
+    <div class="gift" id="gift" role="button" aria-label="open your present">
+      <div class="rays"></div>
+      <div class="gift-body" id="gift-body">
+        <div class="box"></div>
+        <div class="lid"><canvas class="icon bow" data-icon="bowY" data-size="100"></canvas></div>
+      </div>
+    </div>
+    <p class="hint" id="gift-hint">tap to open</p>
+  </div>
+</section>
+
+<!-- scratch + finale -->
+<section class="screen" id="s-reveal">
+  <div class="stack" id="reveal-stack">
+    <div class="title-swap">
+      <p class="sticker-text t-lg st-sky" id="reveal-pre" style="rotate:-2deg">one last thing...</p>
+      <p class="sticker-text t-xl" id="reveal-post">Congrats!</p>
+    </div>
+    <div class="float">
+      <div class="tilt">
+        <div class="scratch-wrap">
+          <div class="giftcard"></div>
+          <canvas id="scratch"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="finale-zone">
+      <p class="hint">scratch the card!</p>
+      <div class="finale">
+        <h2 class="final-line">check your email <canvas class="icon" data-icon="letter" data-size="44"></canvas></h2>
+        <p class="body" id="finale-text"></p>
+        <button class="link" onclick="location.reload()">play again ↺</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ============================================================
+   ✏️  PERSONALIZE HERE
+   ============================================================ */
+const CONFIG = {
+  name: 'Prisha',          // her name or nickname
+  from: 'Bryan',                // your name, for the sign-offs
+  store: 'Brandy Melville',
+  amount: '$200',
+  letter: "I made you a tiny little game for your birthday. Beat all three levels and there's a surprise waiting for you at the very end…",
+  catchTarget: 15,
+  quiz: [
+    // multiple choice: answer = index of the correct option (0–3), or 'all' if every option is right
+    // typed answer: leave out options; answer = accepted spellings (ignores caps, spaces & punctuation); hint shows after 2 misses
+    { q: 'What was the name of the first movie we watched together?', answer: ['La La Land', 'Lalaland'], hint: 'Emma Stone & Ryan Gosling 🎹' },
+    { q: "What's my favorite thing about you?", options: ['Your eyes', 'Your laugh', 'Your heart', 'Your farts'], answer: 'all' },
+    { q: 'How much do I love you?', options: ['A lot', 'Like, a LOT', 'More than rc cars', 'More than everything ∞'], answer: 3 },
+  ],
+  finale: 'Happy birthday to my favorite person in the whole world. Go treat yourself, you deserve it 🛍️',
+  // gift card email, sent when she taps "yes" on the last level (backend: ~/code/birthday-email/Code.gs)
+  // paste your Apps Script web app URL here; leave '' to turn emailing off. Open the site with ?test to email yourself instead.
+  emailEndpoint: 'https://script.google.com/macros/s/AKfycbxFJhBr_c7a-dZveIHp3ertQMv41snn5pxXKNmIMCCEmn9S-cdClZLs1hZJZB2cl_GE/exec',
+  emailToken: '77f7e3c3dc8a26acdb159571',
+};
+
+/* ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const center = el => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+const INK = '#6b3f4a';
+const CONF = ['#ff9fb8', '#ffc6d3', '#ffe08a', '#c4ead8', '#ddd0fb', '#cfe0fb', '#ffd8bf'];
+let W = innerWidth, H = innerHeight, time = 0;
+
+$$('[data-name]').forEach(el => el.textContent = CONFIG.name);
+$$('[data-from]').forEach(el => el.textContent = CONFIG.from);
+$$('[data-target]').forEach(el => el.textContent = CONFIG.catchTarget);
+$('#finale-text').textContent = CONFIG.finale;
+$$('.giftcard').forEach(el => el.innerHTML = `
+  <div class="gc-label">
+    <div class="gc-brand">${CONFIG.store}</div>
+    <div class="gc-amount sticker-text">${CONFIG.amount}</div>
+    <div class="gc-sub">gift card</div>
+  </div>
+  <canvas class="icon gc-bow" data-icon="bow" data-size="42"></canvas>
+  <span class="gc-for">for ${CONFIG.name}</span>
+  <span class="gc-shine"></span>`);
+
+/* ---------- sound ---------- */
+let actx = null, muted = false;
+addEventListener('pointerdown', () => {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+  } catch (e) {}
+}, true);
+function tone(freq, dur = .2, type = 'sine', vol = .07, when = 0) {
+  if (muted || !actx) return;
+  const t = actx.currentTime + when, o = actx.createOscillator(), g = actx.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol, t + .01);
+  g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g).connect(actx.destination);
+  o.start(t); o.stop(t + dur + .05);
+}
+const PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.51, 1567.98, 1760];
+const sfx = {
+  chime: () => [1046.5, 1318.5, 1568].forEach((f, i) => tone(f, .4, 'sine', .05, i * .07)),
+  pop: n => { tone(PENTA[n % PENTA.length], .22, 'triangle', .07); tone(PENTA[n % PENTA.length] * 2, .15, 'sine', .02); },
+  bad: () => { tone(220, .25, 'sawtooth', .025); tone(160, .35, 'triangle', .06, .05); },
+  boing: p => tone(260 * p, .18, 'triangle', .07),
+  fanfare: () => [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98, 2093].forEach((f, i) => tone(f, .7, 'triangle', .05, i * .09)),
+};
+const speaker = on => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="#ffc6d3"/>${on ? '<path d="M15.5 9.5c1.2 1.4 1.2 3.6 0 5M18 7c2.6 2.8 2.6 7.2 0 10"/>' : '<path d="M16 9.5l5 5M21 9.5l-5 5"/>'}</svg>`;
+$('#mute').innerHTML = speaker(true);
+$('#mute').onclick = () => { muted = !muted; $('#mute').innerHTML = speaker(!muted); };
+
+/* ---------- shapes (scratch foil) ---------- */
+function heart(c, x, y, s) {
+  const t = y - s * .45;
+  c.beginPath();
+  c.moveTo(x, t + s * .3);
+  c.bezierCurveTo(x, t, x - s * .5, t, x - s * .5, t + s * .3);
+  c.bezierCurveTo(x - s * .5, t + s * .6, x - s * .1, t + s * .75, x, t + s * .95);
+  c.bezierCurveTo(x + s * .1, t + s * .75, x + s * .5, t + s * .6, x + s * .5, t + s * .3);
+  c.bezierCurveTo(x + s * .5, t, x, t, x, t + s * .3);
+  c.fill();
+}
+function star(c, x, y, r) {
+  c.beginPath();
+  c.moveTo(x, y - r);
+  c.quadraticCurveTo(x, y, x + r, y);
+  c.quadraticCurveTo(x, y, x, y + r);
+  c.quadraticCurveTo(x, y, x - r, y);
+  c.quadraticCurveTo(x, y, x, y - r);
+  c.fill();
+}
+/* ---------- hand-drawn sticker icons ---------- */
+const ICONS = {
+  bag: `
+    <path d="M35 37 C34 13 66 13 65 37" stroke-width="7.5"/>
+    <path d="M35 37 C34 13 66 13 65 37" stroke="#ffd6e0" stroke-width="3"/>
+    <path d="M19 35 L81 34 L86 87 Q86 92 81 92 L19 92 Q14 92 14.5 87 Z" fill="#ffc6d3"/>
+    <path d="M19 35 L81 34 L81.8 45 L18.2 46 Z" fill="#ffaec3"/>
+    <circle cx="35" cy="40" r="2" fill="#6b3f4a" stroke="none"/><circle cx="65" cy="39.5" r="2" fill="#6b3f4a" stroke="none"/>
+    <path d="M23 52 L21.5 82" stroke="#fff" stroke-width="3.2" opacity=".85"/>
+    <g fill="#fff" stroke="none" opacity=".9"><circle cx="31" cy="57" r="2.3"/><circle cx="72" cy="55" r="2.3"/><circle cx="70" cy="83" r="2.3"/><circle cx="31" cy="83" r="2.3"/><circle cx="77" cy="70" r="2.3"/><circle cx="24" cy="69" r="1.6"/></g>
+    <path d="M47 65 L39 81 L44.5 79 L47.5 83.5 L51 66 Z" fill="#fff6ec"/>
+    <path d="M53 65 L61 81 L55.5 79 L52.5 83.5 L49 66 Z" fill="#fff6ec"/>
+    <path d="M50 63 C40 51 28 54 30.5 63 C33 72 43 70 50 63 Z" fill="#fff6ec"/>
+    <path d="M50 63 C60 51 72 54 69.5 63 C67 72 57 70 50 63 Z" fill="#fff6ec"/>
+    <ellipse cx="50" cy="63.5" rx="4.2" ry="4.8" fill="#ffe1e9"/>`,
+
+  cheese: `
+    <path d="M9 57 L90 46 L91 76 L10 85 Z" fill="#ffd978"/>
+    <path d="M9 57 L63 24 L90 46 Z" fill="#ffeaa6"/>
+    <path d="M19 55 L58 31" stroke="#fff" stroke-width="2.8" opacity=".9"/>
+    <g fill="#f2bd52" stroke-width="2.4">
+      <ellipse cx="29" cy="71" rx="6.5" ry="5.5"/><ellipse cx="55" cy="63" rx="4.6" ry="4.2"/>
+      <ellipse cx="75" cy="69" rx="5.4" ry="4.8"/><circle cx="45" cy="78" r="2.6"/><circle cx="85" cy="58" r="2.2"/>
+    </g>
+    <g fill="#f8d374" stroke-width="2.2"><ellipse cx="60" cy="38" rx="5.5" ry="3"/><ellipse cx="74" cy="44.5" rx="3.6" ry="2"/><ellipse cx="44" cy="44" rx="2.6" ry="1.6"/></g>`,
+
+  shirley: `
+    <defs><linearGradient id="d" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffdcc4"/><stop offset=".5" stop-color="#ffb4bc"/><stop offset="1" stop-color="#ff8ca5"/>
+    </linearGradient></defs>
+    <g transform="rotate(20 64 26)">
+      <rect x="61" y="2" width="7" height="46" rx="2" fill="#fff" stroke="none"/>
+      <path d="M61 9 L68 12.5 M61 18 L68 21.5 M61 27 L68 30.5" stroke="#f27a8a" stroke-width="2.8" stroke-linecap="butt"/>
+      <rect x="61" y="2" width="7" height="46" rx="2" stroke-width="2.6"/>
+    </g>
+    <path d="M25 30 L75 30 L67.5 90 Q67 94 62.5 94 L37.5 94 Q33 94 32.5 90 Z" fill="#e6f3fb" fill-opacity=".65" stroke="none"/>
+    <path d="M27.5 43 L72.5 43 L66.6 89.5 Q66.2 91.5 63 91.5 L37 91.5 Q33.8 91.5 33.4 89.5 Z" fill="url(#d)" stroke="none"/>
+    <path d="M27.5 43 L72.5 43" stroke-width="2.2"/>
+    <rect x="35" y="46" width="13" height="13" rx="2.5" fill="#fff" fill-opacity=".6" stroke-width="2" transform="rotate(-14 41.5 52.5)"/>
+    <rect x="51" y="53" width="12" height="12" rx="2.5" fill="#fff" fill-opacity=".6" stroke-width="2" transform="rotate(12 57 59)"/>
+    <g fill="#fff" stroke="none" opacity=".9"><circle cx="41" cy="73" r="1.9"/><circle cx="58" cy="79" r="2.3"/><circle cx="47" cy="85" r="1.5"/><circle cx="62" cy="70" r="1.4"/><circle cx="52" cy="70" r="1.1"/></g>
+    <path d="M25 30 L75 30 L67.5 90 Q67 94 62.5 94 L37.5 94 Q33 94 32.5 90 Z"/>
+    <path d="M30.5 38 L35.5 85" stroke="#fff" stroke-width="3.2" opacity=".95"/>
+    <path d="M36 23 C38 13 44 8 51 6" stroke-width="2.6"/>
+    <circle cx="34.5" cy="28" r="8.5" fill="#f2687e"/>
+    <path d="M30 25.5 Q31 22 34.5 21.8" stroke="#fff" stroke-width="2.3"/>`,
+
+  tickets: `
+    <g transform="translate(13 23) rotate(-12)">
+      <path d="M0 0 H64 V13 A4 4 0 0 0 64 21 V34 H0 V21 A4 4 0 0 0 0 13 Z" fill="#ddd0fb"/>
+      <path d="M47 4 V30" stroke-width="2" stroke-dasharray="3 3.6"/>
+      <path d="M14 11 L15.5 14.9 L19.7 15.2 L16.5 17.8 L17.5 21.9 L14 19.6 L10.5 21.9 L11.5 17.8 L8.3 15.2 L12.5 14.9 Z" fill="#ffe08a" stroke-width="1.8"/>
+      <path d="M25 13 H40 M25 21 H36" stroke-width="2.6"/>
+      <circle cx="55.5" cy="17" r="3.4" fill="#fff6ec" stroke-width="2"/>
+    </g>
+    <g transform="translate(24 46) rotate(9)">
+      <path d="M0 0 H64 V13 A4 4 0 0 0 64 21 V34 H0 V21 A4 4 0 0 0 0 13 Z" fill="#ffcbd8"/>
+      <path d="M47 4 V30" stroke-width="2" stroke-dasharray="3 3.6"/>
+      <path d="M14 11 L15.5 14.9 L19.7 15.2 L16.5 17.8 L17.5 21.9 L14 19.6 L10.5 21.9 L11.5 17.8 L8.3 15.2 L12.5 14.9 Z" fill="#ffe08a" stroke-width="1.8"/>
+      <path d="M25 13 H40 M25 21 H36" stroke-width="2.6"/>
+      <path d="M55.5 14.5 C55.5 11.3 51 11.3 51 14.8 C51 17.8 54 19.8 55.5 21.6 C57 19.8 60 17.8 60 14.8 C60 11.3 55.5 11.3 55.5 14.5 Z" fill="#f27a8a" stroke-width="1.8"/>
+      <path d="M4 5 H22" stroke="#fff" stroke-width="2.4" opacity=".9"/>
+    </g>`,
+
+  sewing: `
+    <path d="M12 70 L88 70 L93 75 L7 75 Z" fill="#ffe1e9"/>
+    <rect x="7" y="75" width="86" height="12" rx="3.5" fill="#ffc6d3"/>
+    <path d="M14 81 H86" stroke="#fff" stroke-width="2" stroke-dasharray="4 4" opacity=".95"/>
+    <path d="M50 26 V11" stroke-width="2.4"/>
+    <path d="M24 26 H78 Q84 26 84 32 V71 H66 V45 H36 V59 Q36 63 32 63 H22 Q18 63 18 59 V32 Q18 26 24 26 Z" fill="#bde6d2"/>
+    <path d="M27 37 H73" stroke="#ffaec3" stroke-width="4"/>
+    <path d="M23 31 H62" stroke="#fff" stroke-width="2.6" opacity=".9"/>
+    <path d="M22.5 40 V56" stroke="#fff" stroke-width="2.6" opacity=".9"/>
+    <circle cx="75" cy="55" r="4.6" fill="#fff6ec" stroke-width="2.2"/>
+    <rect x="24" y="63" width="5" height="4.5" fill="#e3e3ee" stroke-width="2"/>
+    <path d="M26.5 67.5 V71.5" stroke-width="1.8"/>
+    <path d="M21 70 H32" stroke-width="2.6"/>
+    <circle cx="86" cy="41" r="9" fill="#ffc6d3"/>
+    <circle cx="86" cy="41" r="3" fill="#fff6ec" stroke-width="2.2"/>
+    <rect x="44" y="11.5" width="12" height="11" fill="#f6a5ba" stroke-width="2.4"/>
+    <path d="M46 15 H54 M46 18.5 H54" stroke="#e07a95" stroke-width="1.4"/>
+    <rect x="41.5" y="8.5" width="17" height="4" rx="1.6" fill="#fff6ec" stroke-width="2.4"/>
+    <rect x="41.5" y="21.5" width="17" height="4" rx="1.6" fill="#fff6ec" stroke-width="2.4"/>
+    <path d="M44 17 C34 17 28 20 26.5 26" stroke="#e07a95" stroke-width="1.6"/>`,
+
+  earrings: `
+    <g transform="translate(15 15) rotate(-9) scale(1.3)">
+      <circle cx="12" cy="6" r="5" fill="#ffe08a" stroke-width="2.2"/>
+      <path d="M10 4.5 Q11 3 12.5 3" stroke="#fff" stroke-width="1.6"/>
+      <path d="M12 11 V16.5" stroke-width="2"/>
+      <circle cx="12" cy="21" r="4.6" fill="#fff6ec" stroke-width="2.2"/>
+      <path d="M12 25.6 V29.5" stroke-width="2"/>
+      <path d="M12 35 C12 28.5 2 27.5 2 35.5 C2 42.5 9 46.5 12 51 C15 46.5 22 42.5 22 35.5 C22 27.5 12 28.5 12 35 Z" fill="#f6a5ba" stroke-width="2.3"/>
+      <path d="M6 35 Q6 31.6 9 31.4" stroke="#fff" stroke-width="2"/>
+    </g>
+    <g transform="translate(52 20) rotate(10) scale(1.3)">
+      <circle cx="12" cy="6" r="5" fill="#ffe08a" stroke-width="2.2"/>
+      <path d="M10 4.5 Q11 3 12.5 3" stroke="#fff" stroke-width="1.6"/>
+      <path d="M12 11 V16.5" stroke-width="2"/>
+      <circle cx="12" cy="21" r="4.6" fill="#fff6ec" stroke-width="2.2"/>
+      <path d="M12 25.6 V29.5" stroke-width="2"/>
+      <path d="M12 35 C12 28.5 2 27.5 2 35.5 C2 42.5 9 46.5 12 51 C15 46.5 22 42.5 22 35.5 C22 27.5 12 28.5 12 35 Z" fill="#f6a5ba" stroke-width="2.3"/>
+      <path d="M6 35 Q6 31.6 9 31.4" stroke="#fff" stroke-width="2"/>
+    </g>`,
+
+  hotpot: `
+    <defs><clipPath id="b"><ellipse cx="50" cy="51" rx="35" ry="8.5"/></clipPath></defs>
+    <g stroke="#c9a0ab" stroke-width="2.6"><path d="M33 36 C28 30 37 26 32 18"/><path d="M47 34 C42 27 51 23 46 13"/></g>
+    <rect x="3" y="53" width="13" height="7.5" rx="3.75" fill="#b6cdf4"/>
+    <rect x="84" y="53" width="13" height="7.5" rx="3.75" fill="#b6cdf4"/>
+    <path d="M12 51 Q12 89 50 89 Q88 89 88 51 Z" fill="#cfe0fb"/>
+    <path d="M22 70 Q28.5 65 35 70 T48 70 T61 70 T74 70" stroke="#fff" stroke-width="2.8" opacity=".95"/>
+    <path d="M18 58 Q20 71 30 80" stroke="#fff" stroke-width="3" opacity=".8"/>
+    <ellipse cx="50" cy="51" rx="40" ry="11.5" fill="#b6cdf4"/>
+    <g clip-path="url(#b)" stroke="none">
+      <rect x="10" y="40" width="80" height="24" fill="#fff0d2"/>
+      <path d="M50.5 42 C43 47 57 54 49.5 60 L10 60 L10 40 L50.5 40 Z" fill="#ff9d8e"/>
+    </g>
+    <ellipse cx="50" cy="51" rx="35" ry="8.5" stroke-width="2.2"/>
+    <path d="M50.5 42.5 C43 47 57 54 49.5 59.5" stroke-width="2"/>
+    <g fill="#e2505f" stroke="none"><circle cx="24" cy="50" r="1.6"/><circle cx="33" cy="55" r="1.5"/><circle cx="40" cy="47" r="1.4"/><circle cx="30" cy="46.5" r="1.2"/></g>
+    <rect x="34" y="48" width="7" height="5.5" rx="1" fill="#fff6ec" stroke-width="1.8"/>
+    <path d="M61 54 C58 48 66 44 71 48 C69 52.5 65.5 54.5 61 54 Z" fill="#bfe6a6" stroke-width="1.8"/>
+    <circle cx="74" cy="53" r="2.5" fill="#f2d2b0" stroke-width="1.6"/>
+    <circle cx="58" cy="47" r="2.7" fill="#fff" stroke-width="1.6"/>
+    <path d="M60 50 L84 12" stroke-width="6.5"/><path d="M60 50 L84 12" stroke="#f7d9b0" stroke-width="3"/>
+    <path d="M66 51 L93 19" stroke-width="6.5"/><path d="M66 51 L93 19" stroke="#f7d9b0" stroke-width="3"/>`,
+
+  cloud: `
+    <g fill="#a9c8f0" stroke-width="2.2">
+      <path d="M33 73 C30 78 30 82 33 82.5 C36 82 36 78 33 73 Z"/>
+      <path d="M50 79 C47 84 47 88 50 88.5 C53 88 53 84 50 79 Z"/>
+      <path d="M67 73 C64 78 64 82 67 82.5 C70 82 70 78 67 73 Z"/>
+    </g>
+    <path d="M25 67 C12 67 10 49 23 46 C23 32 42 28 48 39 C54 26 75 29 75 43 C88 42 92 61 79 67 Z" fill="#dfe1ee"/>
+    <path d="M27 53 Q27 47.5 32.5 46.5" stroke="#fff" stroke-width="2.8"/>
+    <path d="M36 49 L43 51.5 M64 49 L57 51.5" stroke-width="2.4"/>
+    <circle cx="40" cy="56" r="2.3" fill="#6b3f4a" stroke="none"/><circle cx="60" cy="56" r="2.3" fill="#6b3f4a" stroke="none"/>
+    <path d="M45 63 Q50 59.5 55 63" stroke-width="2.4"/>
+    <g fill="#f6b8c8" stroke="none" opacity=".85"><ellipse cx="34" cy="61" rx="3.2" ry="1.9"/><ellipse cx="66" cy="61" rx="3.2" ry="1.9"/></g>`,
+};
+
+Object.assign(ICONS, {
+  heart: `
+    <path d="M50 85 C30 71 12 57 12 37 C12 24 22 15 33 15 C41 15 47 20 50 27 C53 20 59 15 67 15 C78 15 88 24 88 37 C88 57 70 71 50 85 Z" fill="#ff9fb8" stroke-width="5"/>
+    <path d="M24 34 Q25 25 33 24" stroke="#fff" stroke-width="5"/>`,
+  star: `
+    <path d="M50 12 L60.6 37.4 L88 39.6 L67.1 57.6 L73.5 84.4 L50 70 L26.5 84.4 L32.9 57.6 L12 39.6 L39.4 37.4 Z" fill="#ffe08a" stroke-width="5"/>
+    <circle cx="43" cy="52" r="3" fill="#6b3f4a" stroke="none"/><circle cx="57" cy="52" r="3" fill="#6b3f4a" stroke="none"/>
+    <path d="M45.5 59 Q50 63 54.5 59" stroke-width="3"/>`,
+  daisy: `
+    <g fill="#fffaf3" stroke-width="4.5">
+      ${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<ellipse cx="50" cy="27" rx="11" ry="19" transform="rotate(${a} 50 50)"/>`).join('')}
+    </g>
+    <circle cx="50" cy="50" r="13.5" fill="#ffd36e" stroke-width="4.5"/>
+    <path d="M43.5 46 Q45.5 41.5 50 41.5" stroke="#fff" stroke-width="3.5"/>`,
+  sparkle: `
+    <path d="M50 8 C53 38 62 47 92 50 C62 53 53 62 50 92 C47 62 38 53 8 50 C38 47 47 38 50 8 Z" fill="#fff3b0" stroke-width="5"/>`,
+  puff: `
+    <path d="M25 73 C12 73 10 55 23 52 C23 38 42 34 48 45 C54 32 75 35 75 49 C88 48 92 67 79 73 Z" fill="#e6f0fd" stroke-width="4.5"/>
+    <path d="M37 59 Q40 55.5 43 59 M57 59 Q60 55.5 63 59" stroke-width="3.2"/>
+    <path d="M45 64 Q50 68.5 55 64" stroke-width="3.2"/>
+    <g fill="#ffb8ca" stroke="none"><ellipse cx="33" cy="64" rx="4" ry="2.4"/><ellipse cx="67" cy="64" rx="4" ry="2.4"/></g>
+    <path d="M27 58 Q27 52 33 51" stroke="#fff" stroke-width="3.5"/>`,
+  cherry: `
+    <path d="M37 66 C39 46 48 30 60 18" stroke-width="4.5"/>
+    <path d="M66 62 C64 46 62 32 60 18" stroke-width="4.5"/>
+    <path d="M60 18 C67 9 80 10 85 17 C77 24 66 25 60 18 Z" fill="#bfe6a6" stroke-width="4"/>
+    <circle cx="35" cy="70" r="15" fill="#ff8fab" stroke-width="4.5"/>
+    <circle cx="67" cy="66" r="15" fill="#ff8fab" stroke-width="4.5"/>
+    <path d="M28 66 Q29 60.5 34.5 59.5 M60 62 Q61 56.5 66.5 55.5" stroke="#fff" stroke-width="4"/>`,
+  bow: `
+    <path d="M46 52 L30 86 L40 82 L45 92 L54 56 Z" fill="#ff9fb8" stroke-width="4"/>
+    <path d="M54 52 L70 86 L60 82 L55 92 L46 56 Z" fill="#ff9fb8" stroke-width="4"/>
+    <path d="M50 48 C38 25 11 23 11 44 C11 63 36 63 50 50 Z" fill="#ffc6d3" stroke-width="4"/>
+    <path d="M50 48 C62 25 89 23 89 44 C89 63 64 63 50 50 Z" fill="#ffc6d3" stroke-width="4"/>
+    <path d="M27 41 C33 41 41 44.5 46 48 M73 41 C67 41 59 44.5 54 48" stroke-width="2.6"/>
+    <rect x="41.5" y="39" width="17" height="19" rx="6.5" fill="#ff9fb8" stroke-width="4"/>
+    <path d="M19 41 Q21 33 29 32" stroke="#fff" stroke-width="4"/>`,
+  letter: `
+    <rect x="11" y="25" width="78" height="54" rx="7" fill="#fffaf3" stroke-width="4.5"/>
+    <path d="M14 76 L40 55 M86 76 L60 55" stroke-width="3"/>
+    <path d="M11 32 Q11 25 18 25 L82 25 Q89 25 89 32 L50 60 Z" fill="#ffc6d3" stroke-width="4.5"/>
+    <path d="M50 70 C42 64 38 59 38 54 C38 50 41 47 44.5 47 C47 47 49 49 50 51 C51 49 53 47 55.5 47 C59 47 62 50 62 54 C62 59 58 64 50 70 Z" fill="#ff8fab" stroke-width="3.5"/>`,
+});
+ICONS.bowY = ICONS.bow.replace(/#ff9fb8/g, '#ffd36e').replace(/#ffc6d3/g, '#ffe9a6');
+
+const iconImgs = {};
+const stickerCache = new Map();
+const iconsReady = Promise.all(Object.entries(ICONS).map(([name, body]) => new Promise(res => {
+  const img = new Image();
+  img.onload = () => { iconImgs[name] = img; res(); };
+  img.onerror = () => res();
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g fill="none" stroke="#6b3f4a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${body}</g></svg>`);
+})));
+
+// chalky pastel grain, shared by every sticker
+const grain = (() => {
+  const c = document.createElement('canvas'), n = 96;
+  c.width = c.height = n;
+  const x = c.getContext('2d'), d = x.createImageData(n, n);
+  for (let i = 0; i < d.data.length; i += 4) {
+    const r = Math.random();
+    if (r < .22) { d.data[i] = 107; d.data[i + 1] = 63; d.data[i + 2] = 74; d.data[i + 3] = 16 + Math.random() * 26; }
+    else if (r > .8) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 255; d.data[i + 3] = 30 + Math.random() * 55; }
+  }
+  x.putImageData(d, 0, 0);
+  return c;
+})();
+
+function layer(s) {
+  const c = document.createElement('canvas');
+  c.width = c.height = s;
+  return [c, c.getContext('2d')];
+}
+// die-cut sticker: pastel art + grain, white paper border, soft shadow. Returns a canvas sized (size * 1.28) CSS px.
+function sticker(name, size) {
+  const key = name + size;
+  if (stickerCache.has(key)) return stickerCache.get(key);
+  const img = iconImgs[name];
+  if (!img) return null;
+  const pad = size * .14, S = Math.ceil((size + pad * 2) * DPR), o = pad * DPR, r = size * .075 * DPR;
+
+  const [art, a] = layer(S);
+  a.drawImage(img, o, o, size * DPR, size * DPR);
+  a.globalCompositeOperation = 'source-atop';
+  a.fillStyle = a.createPattern(grain, 'repeat');
+  a.fillRect(0, 0, S, S);
+
+  const [sil, s] = layer(S);
+  s.drawImage(art, 0, 0);
+  s.globalCompositeOperation = 'source-in';
+  s.fillStyle = '#fff';
+  s.fillRect(0, 0, S, S);
+  const grow = (rad, color) => {
+    const [g, gx] = layer(S);
+    for (let i = 0; i < 28; i++) { const t = i / 28 * Math.PI * 2; gx.drawImage(sil, Math.cos(t) * rad, Math.sin(t) * rad); }
+    gx.drawImage(sil, 0, 0);
+    gx.globalCompositeOperation = 'source-in';
+    gx.fillStyle = color;
+    gx.fillRect(0, 0, S, S);
+    return g;
+  };
+
+  const [out, x] = layer(S);
+  x.shadowColor = 'rgba(140,60,85,.3)';
+  x.shadowBlur = size * .08 * DPR;
+  x.shadowOffsetY = size * .045 * DPR;
+  x.drawImage(grow(r + DPR * .9, 'rgba(214,160,176,.55)'), 0, 0);
+  x.shadowColor = 'transparent';
+  x.drawImage(grow(r, '#fffdfa'), 0, 0);
+  x.globalCompositeOperation = 'source-atop';
+  x.globalAlpha = .3;
+  x.fillStyle = x.createPattern(grain, 'repeat');
+  x.fillRect(0, 0, S, S);
+  x.globalCompositeOperation = 'source-over';
+  x.globalAlpha = 1;
+  x.drawImage(art, 0, 0);
+
+  stickerCache.set(key, out);
+  return out;
+}
+// <canvas class="icon" data-icon="cheese" data-size="40"> → painted sticker
+function paintIcons() {
+  $$('canvas.icon').forEach(el => {
+    const st = sticker(el.dataset.icon, +el.dataset.size);
+    if (!st) return;
+    el.width = st.width; el.height = st.height;
+    el.style.width = el.style.height = (st.width / DPR) + 'px';
+    el.getContext('2d').drawImage(st, 0, 0);
+  });
+}
+
+/* ---------- canvases: ambient stickers + fx ---------- */
+const ambC = $('#ambient'), fxC = $('#fx');
+let ambCtx, fxCtx;
+function fit(c) {
+  c.width = W * DPR; c.height = H * DPR;
+  const x = c.getContext('2d');
+  x.setTransform(DPR, 0, 0, DPR, 0, 0);
+  return x;
+}
+function drawSticker(ctx, name, size, x, y, rot = 0, scale = 1) {
+  const s = sticker(name, size);
+  if (!s) return;
+  const w = s.width / DPR * scale;
+  ctx.save();
+  ctx.translate(x, y); ctx.rotate(rot);
+  ctx.drawImage(s, -w / 2, -w / 2, w, w);
+  ctx.restore();
+}
+const DECOR = ['heart', 'star', 'daisy', 'sparkle', 'puff', 'cherry', 'bow', 'heart', 'daisy'];
+const newAmb = init => ({
+  name: pick(DECOR), size: pick([26, 32, 38, 44]), x: rand(10, W - 10), y: init ? rand(0, H) : H + 50,
+  v: rand(9, 20), ph: rand(0, 6.28), r0: rand(-.3, .3),
+});
+let ambient = [], ambAlpha = 1;
+const parts = [];
+let raining = false;
+
+const BURST_ICONS = ['heart', 'star', 'sparkle', 'daisy', 'heart'];
+function addSticker(x, y, vx, vy, name, size, extra = {}) {
+  parts.push({ kind: 'st', x, y, vx, vy, name, size, life: 1, decay: rand(.7, 1.1), rot: rand(-.5, .5), vr: rand(-3, 3), g: 420, drag: 1.4, ...extra });
+}
+function addPaper(x, y, vx, vy) {
+  parts.push({ kind: 'paper', x, y, vx, vy, w: rand(7, 12), h: rand(4.5, 7.5), color: pick(CONF), life: 1, decay: rand(.28, .42),
+    rot: rand(0, 6.28), vr: rand(-7, 7), flip: rand(0, 6.28), vf: rand(5, 11), g: 330, drag: 1.6 });
+}
+function burst(x, y, n = 20, power = 1) {
+  for (let i = 0; i < n; i++) {
+    const a = rand(0, Math.PI * 2), s = rand(110, 330) * power;
+    if (i % 3 === 0) addSticker(x, y, Math.cos(a) * s, Math.sin(a) * s - 100 * power, pick(BURST_ICONS), pick([16, 20, 24]));
+    else addPaper(x, y, Math.cos(a) * s * 1.1, Math.sin(a) * s * 1.1 - 120 * power);
+  }
+}
+let lastTrail = 0;
+addEventListener('pointermove', e => {
+  const now = performance.now();
+  if (now - lastTrail < 45) return;
+  lastTrail = now;
+  addSticker(e.clientX + rand(-6, 6), e.clientY + rand(-6, 6), rand(-20, 20), rand(-50, 0), 'sparkle', 12, { decay: rand(1.6, 2.4), g: 30, drag: .5 });
+}, { passive: true });
+
+function celebrate(big = true) {
+  const n = big ? 110 : 45, ox = W / 2, oy = H * .62;
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI / 2 + rand(-1, 1), s = rand(420, 900) * (big ? 1 : .8);
+    if (i % 4 === 0) addSticker(ox, oy, Math.cos(a) * s * .8, Math.sin(a) * s * .8, pick(BURST_ICONS), pick([20, 24, 28]), { decay: rand(.35, .5) });
+    else addPaper(ox, oy, Math.cos(a) * s, Math.sin(a) * s);
+  }
+  if (!big) return;
+  let k = 0;
+  const t = setInterval(() => {
+    for (const side of [0, 1]) {
+      const x = side ? W : 0, dir = side ? -1 : 1;
+      addPaper(x, H * .78, dir * rand(250, 650), -rand(600, 1000));
+      if (k % 3 === 0) addSticker(x, H * .78, dir * rand(200, 500), -rand(600, 900), pick(BURST_ICONS), 22, { decay: .4 });
+    }
+    if (++k > 60) clearInterval(t);
+  }, 40);
+}
+
+/* ---------- screens ---------- */
+const enter = {};
+function go(id) {
+  $$('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+  game.active = id === 's-catch';
+  enter[id] && enter[id]();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]');
+  if (!b) return;
+  burst(...center(b), 22);
+  sfx.chime();
+  go(b.dataset.go);
+});
+
+/* ---------- envelope + letter ---------- */
+$('#envelope').addEventListener('click', function () {
+  if (this.classList.contains('open')) return;
+  this.classList.add('open');
+  $('#env-stack').classList.add('opened');
+  sfx.chime();
+  setTimeout(() => burst(...center(this), 30, 1.1), 350);
+  setTimeout(() => go('s-letter'), 1900);
+});
+
+let skipTyping = false;
+$('#letter-card').addEventListener('click', () => skipTyping = true);
+enter['s-letter'] = () => {
+  const el = $('#letter-text'), chars = Array.from(CONFIG.letter);
+  let i = 0;
+  el.classList.add('typing');
+  setTimeout(function step() {
+    i = skipTyping ? chars.length : i + 1;
+    el.textContent = chars.slice(0, i).join('');
+    if (i >= chars.length) {
+      el.classList.remove('typing');
+      $('#letter-more').classList.add('show');
+      return;
+    }
+    setTimeout(step, /[.,!?…]/.test(chars[i - 1]) ? 280 : 28);
+  }, 900);
+};
+
+/* ---------- level 1: catch ---------- */
+const game = (() => {
+  const c = $('#game'), target = CONFIG.catchTarget;
+  const GOOD = ['cheese', 'shirley', 'tickets', 'sewing', 'earrings', 'hotpot'];
+  const BAD = 'cloud';
+  let ctx, items = [], floaters = [], score = 0, spawnT = 0, running = false, done = false;
+  let bagX = W / 2, targetX = W / 2, bagV = 0, squish = 0;
+  const keys = {};
+
+  c.addEventListener('pointerdown', e => { targetX = e.clientX; c.setPointerCapture && c.setPointerCapture(e.pointerId); });
+  c.addEventListener('pointermove', e => { targetX = e.clientX; });
+  addEventListener('keydown', e => keys[e.key] = true);
+  addEventListener('keyup', e => keys[e.key] = false);
+
+  $('#catch-start').onclick = () => {
+    $('#catch-intro').classList.add('hidden');
+    sfx.chime();
+    running = true;
+    spawnT = .4;
+  };
+
+  function hud() {
+    $('#catch-count').textContent = score;
+    $('#catch-fill').style.width = (score / target * 100) + '%';
+  }
+  function spawn() {
+    const bad = score > 1 && Math.random() < .22;
+    items.push({
+      icon: bad ? BAD : pick(GOOD), bad,
+      x: rand(40, W - 40), y: -50,
+      vy: rand(150, 215) * (1 + score * .035) * Math.max(.85, H / 760),
+      size: bad ? 58 : 62,
+      r0: rand(-.2, .2), rot: 0, wf: rand(1, 3), ph: rand(0, 6), wa: rand(10, 35),
+    });
+  }
+  function caught(it, bagY) {
+    score++;
+    squish = 1;
+    burst(it.x, it.y, 10, .7);
+    floaters.push({ x: it.x, y: bagY - 66, text: '+1', color: '#ff9fb8', life: 1 });
+    sfx.pop(score);
+    hud();
+    if (score >= target) win();
+  }
+  function hitBad(it, bagY) {
+    score = Math.max(0, score - 1);
+    floaters.push({ x: it.x, y: bagY - 66, text: '−1', color: '#b4d3fa', life: 1 });
+    c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+    navigator.vibrate && navigator.vibrate(60);
+    sfx.bad();
+    hud();
+  }
+  function win() {
+    running = false; done = true;
+    items.forEach(it => burst(it.x, it.y, 6, .6));
+    items = [];
+    sfx.fanfare();
+    celebrate(false);
+    setTimeout(() => $('#catch-done').classList.remove('hidden'), 900);
+  }
+  function draw(icon, size, x, y, rot = 0, sx = 1, sy = 1) {
+    const s = sticker(icon, size);
+    if (!s) return;
+    const w = s.width / DPR;
+    ctx.save();
+    ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sx, sy);
+    ctx.drawImage(s, -w / 2, -w / 2, w, w);
+    ctx.restore();
+  }
+  function tick(dt) {
+    ctx.clearRect(0, 0, W, H);
+    const bagY = H - Math.max(118, H * .16);
+    if (keys.ArrowLeft) targetX -= 650 * dt;
+    if (keys.ArrowRight) targetX += 650 * dt;
+    targetX = clamp(targetX, 40, W - 40);
+    const prev = bagX;
+    bagX += (targetX - bagX) * Math.min(1, dt * 16);
+    bagV = (bagX - prev) / Math.max(dt, .001);
+
+    if (running && (spawnT -= dt) <= 0) {
+      spawnT = rand(.45, .8) * (1 - score / target * .3);
+      spawn();
+    }
+    for (let i = items.length - 1; i >= 0; i--) {
+      const it = items[i];
+      it.y += it.vy * dt;
+      it.x += Math.sin(time * it.wf + it.ph) * it.wa * dt;
+      it.rot = it.r0 + Math.sin(time * it.wf * 1.3 + it.ph) * .28;
+      if (running && Math.abs(it.x - bagX) < 46 && it.y > bagY - 50 && it.y < bagY + 18) {
+        items.splice(i, 1);
+        it.bad ? hitBad(it, bagY) : caught(it, bagY);
+        continue;
+      }
+      if (it.y > H + 50) { items.splice(i, 1); continue; }
+      draw(it.icon, it.size, it.x, it.y, it.rot);
+    }
+
+    // bag + soft shadow
+    squish = Math.max(0, squish - dt * 3.5);
+    const sq = Math.sin(squish * Math.PI) * .16;
+    ctx.fillStyle = 'rgba(107,63,74,.15)';
+    ctx.beginPath(); ctx.ellipse(bagX, bagY + 54, 42 - sq * 40, 8, 0, 0, Math.PI * 2); ctx.fill();
+    draw('bag', 96, bagX, bagY, clamp(bagV * .0005, -.3, .3), 1 + sq, 1 - sq);
+    if (done) {
+      const p = 1 + .15 * Math.sin(time * 5);
+      drawSticker(ctx, 'sparkle', 22, bagX - 44, bagY - 46, -.2, p);
+      drawSticker(ctx, 'sparkle', 18, bagX + 46, bagY - 30, .3, 2 - p);
+      drawSticker(ctx, 'heart', 20, bagX + 14, bagY - 74, .15, p);
+    }
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round';
+    ctx.font = '400 30px "Cherry Bomb One", "Fredoka", sans-serif';
+    for (let i = floaters.length - 1; i >= 0; i--) {
+      const f = floaters[i];
+      f.life -= dt * 1.4; f.y -= 50 * dt;
+      if (f.life <= 0) { floaters.splice(i, 1); continue; }
+      ctx.globalAlpha = Math.min(1, f.life * 2);
+      ctx.lineWidth = 10; ctx.strokeStyle = '#fff'; ctx.strokeText(f.text, f.x, f.y);
+      ctx.lineWidth = 4; ctx.strokeStyle = INK; ctx.strokeText(f.text, f.x, f.y);
+      ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, f.y);
+    }
+    ctx.globalAlpha = 1;
+  }
+  return {
+    active: false, tick,
+    resize() { ctx = fit(c); bagX = targetX = clamp(bagX, 40, W - 40); },
+  };
+})();
+
+/* ---------- level 2: quiz ---------- */
+let qi = 0, qLocked = false, misses = 0;
+const RIGHT = ['Correct. Very very very good.', 'I like them all.', 'Nice one puff.']; // shown in order: question 1, 2, 3
+const WRONG = ['hmm… try again 😤', 'excuse me?? 😭', 'wrong!! how dare you', 'are you kidding me 🙄'];
+$('#q-total').textContent = CONFIG.quiz.length;
+function renderQ() {
+  const q = CONFIG.quiz[qi];
+  $('#q-num').textContent = qi + 1;
+  $('#q-text').textContent = q.q;
+  $('#q-feedback').textContent = '';
+  misses = 0;
+  const box = $('#q-options');
+  box.innerHTML = '';
+  if (!q.options) {
+    const form = document.createElement('form');
+    form.className = 'typed';
+    form.innerHTML = `<input class="typed-input" type="text" placeholder="type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"><button class="btn" type="submit">submit</button>`;
+    form.onsubmit = e => { e.preventDefault(); answerText(form.querySelector('input')); };
+    box.appendChild(form);
+    return;
+  }
+  q.options.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = opt;
+    b.style.animationDelay = (i * 70) + 'ms';
+    b.onclick = () => answer(i, b);
+    box.appendChild(b);
+  });
+}
+function answer(i, b) {
+  if (qLocked) return;
+  const q = CONFIG.quiz[qi], fb = $('#q-feedback');
+  if (q.answer === 'all' || q.answer === i) {
+    qLocked = true;
+    if (q.answer === 'all') {
+      $$('.opt').forEach((o, k) => setTimeout(() => { o.classList.add('right'); burst(...center(o), 8, .6); sfx.pop(k + 3); }, k * 140));
+      fb.textContent = RIGHT[qi % RIGHT.length];
+    } else {
+      b.classList.add('right');
+      burst(...center(b), 24);
+      sfx.chime();
+      fb.textContent = RIGHT[qi % RIGHT.length];
+    }
+    nextQ(q.answer === 'all' ? 1900 : 1200);
+  } else {
+    b.classList.add('wrong');
+    b.disabled = true;
+    fb.textContent = pick(WRONG);
+    sfx.bad();
+  }
+}
+const normalize = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+function answerText(input) {
+  const q = CONFIG.quiz[qi], fb = $('#q-feedback');
+  if (qLocked || !input.value.trim()) return;
+  if ([].concat(q.answer).some(a => normalize(a) === normalize(input.value))) {
+    qLocked = true;
+    input.readOnly = true;
+    input.blur();
+    input.classList.add('right');
+    burst(...center(input), 24);
+    sfx.chime();
+    fb.textContent = RIGHT[qi % RIGHT.length];
+    nextQ(1300);
+  } else {
+    misses++;
+    input.classList.remove('nope'); void input.offsetWidth; input.classList.add('nope');
+    input.select();
+    fb.textContent = q.hint && misses >= 2 ? `hint: ${q.hint}` : pick(WRONG);
+    sfx.bad();
+  }
+}
+function nextQ(delay) {
+  setTimeout(() => {
+    if (++qi >= CONFIG.quiz.length) return go('s-love');
+    $('#q-body').classList.add('swap');
+    setTimeout(() => { renderQ(); $('#q-body').classList.remove('swap'); qLocked = false; }, 350);
+  }, delay);
+}
+enter['s-quiz'] = () => { qi = 0; qLocked = false; renderQ(); };
+
+/* ---------- gift card email ---------- */
+const TEST_EMAIL = new URLSearchParams(location.search).has('test');
+function sendGiftEmail(attempt = 0) {
+  if (!CONFIG.emailEndpoint) return;
+  // no-cors: Apps Script answers with a cross-origin redirect; we only need the request to land.
+  // A rejection means it never reached Google, so retrying can't double-send (the script also has a 60s cooldown).
+  fetch(CONFIG.emailEndpoint, { method: 'POST', mode: 'no-cors', keepalive: true, body: JSON.stringify({ token: CONFIG.emailToken, test: TEST_EMAIL }) })
+    .catch(() => { if (attempt < 3) setTimeout(() => sendGiftEmail(attempt + 1), 2000 * (attempt + 1)); });
+}
+
+/* ---------- level 3: do you love me ---------- */
+const yes = $('#yes'), no = $('#no'), noWrap = $('#no-wrap'), noNote = $('#no-note');
+const NO_LINES = ['are you sure?', 'really sure??', 'think again 🤨', 'wrong button', 'pls 🥺', 'nice try', 'not an option', 'just press yes', '😤'];
+let dodges = 0;
+function dodge(e) {
+  if (e) e.preventDefault();
+  if (noWrap.parentElement !== document.body) {
+    const r = noWrap.getBoundingClientRect();
+    document.body.appendChild(noWrap);
+    noWrap.classList.add('runaway');
+    noWrap.style.left = r.left + 'px';
+    noWrap.style.top = r.top + 'px';
+    void noWrap.offsetWidth;
+  }
+  dodges++;
+  noNote.textContent = NO_LINES[Math.min(dodges - 1, NO_LINES.length - 1)];
+  noNote.classList.add('show');
+  const bw = noWrap.offsetWidth, bh = noWrap.offsetHeight, pad = 18;
+  const px = e && e.clientX != null ? e.clientX : W / 2, py = e && e.clientY != null ? e.clientY : H / 2;
+  let x, y, tries = 0;
+  do {
+    x = pad + Math.random() * (W - bw - pad * 2);
+    y = pad + 50 + Math.random() * (H - bh - pad * 2 - 50);
+  } while (++tries < 30 && Math.hypot(x + bw / 2 - px, y + bh / 2 - py) < 170);
+  noWrap.style.left = x + 'px';
+  noWrap.style.top = y + 'px';
+  yes.style.transform = `scale(${Math.min(1 + dodges * .13, 1.9)})`;
+  sfx.boing(1 + dodges * .08);
+}
+no.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') dodge(e); });
+no.addEventListener('pointerdown', dodge);
+no.addEventListener('click', dodge);
+yes.addEventListener('click', () => {
+  sendGiftEmail();
+  noWrap.remove();
+  yes.disabled = true;
+  burst(...center(yes), 40, 1.2);
+  sfx.fanfare();
+  $('#love-title').textContent = dodges > 0 ? 'I knew it 😌' : 'correct answer 😌';
+  $('#love-sub').textContent = dodges > 2 ? `(it only took you ${dodges + 1} tries)` : '(good choice)';
+  setTimeout(() => go('s-gift'), 2000);
+});
+
+/* ---------- gift box ---------- */
+const HINTS = ['tap to open', 'harder!', 'almost…', 'one more!!'];
+let taps = 0;
+$('#gift').addEventListener('click', function () {
+  if (this.classList.contains('open')) return;
+  taps++;
+  const body = $('#gift-body');
+  if (taps < HINTS.length) {
+    body.style.setProperty('--w', (4 + taps * 4) + 'deg');
+    body.classList.remove('wiggle'); void body.offsetWidth; body.classList.add('wiggle');
+    $('.rays').style.opacity = .75 + taps * .08;
+    $('#gift-hint').textContent = HINTS[taps];
+    burst(...center(this), 6 + taps * 4, .5 + taps * .15);
+    sfx.boing(1.4 + taps * .35);
+    navigator.vibrate && navigator.vibrate(25 * taps);
+    return;
+  }
+  this.classList.add('open');
+  $('.rays').style.opacity = '';
+  $('#gift-hint').textContent = 'yay!';
+  const [x, y] = center(this);
+  burst(x, y - 30, 60, 1.4);
+  sfx.fanfare();
+  setTimeout(() => go('s-reveal'), 1900);
+});
+$('#gift-body').addEventListener('animationend', e => { if (e.animationName === 'wiggle') e.currentTarget.classList.remove('wiggle'); });
+
+/* ---------- scratch card + finale ---------- */
+const scratch = (() => {
+  const c = $('#scratch');
+  let ctx, w, h, down = false, last = null, revealed = false, moves = 0;
+
+  async function setup() {
+    try { await Promise.all([document.fonts.load('34px "Cherry Bomb One"'), document.fonts.load('700 19px Gaegu')]); } catch (e) {}
+    w = c.offsetWidth; h = c.offsetHeight;
+    c.width = w * DPR; c.height = h * DPR;
+    ctx = c.getContext('2d');
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.globalCompositeOperation = 'source-over';
+
+    // pastel foil (plain paths only, never stickers, so getImageData stays readable)
+    const g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, '#d9cbfb'); g.addColorStop(.5, '#f8c6d7'); g.addColorStop(1, '#cfe0fb');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#fff';
+    ctx.globalAlpha = .5;
+    for (let y = 16, row = 0; y < h + 20; y += 30, row++)
+      for (let x = row % 2 ? 14 : 29; x < w + 20; x += 30) heart(ctx, x, y, 10);
+    for (let i = 0; i < 40; i++) { ctx.globalAlpha = rand(.5, 1); star(ctx, rand(0, w), rand(0, h), rand(2, 5)); }
+    ctx.globalAlpha = 1;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+    ctx.font = '400 36px "Cherry Bomb One", "Fredoka", sans-serif';
+    ctx.lineWidth = 12; ctx.strokeStyle = '#fff'; ctx.strokeText('scratch me!', w / 2, h / 2 - 10);
+    ctx.lineWidth = 5; ctx.strokeStyle = INK; ctx.strokeText('scratch me!', w / 2, h / 2 - 10);
+    ctx.fillStyle = '#ff9fb8'; ctx.fillText('scratch me!', w / 2, h / 2 - 10);
+    ctx.font = '700 20px Gaegu, "Fredoka", sans-serif';
+    ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.strokeText('your gift is hiding under here', w / 2, h / 2 + 28);
+    ctx.fillStyle = INK; ctx.fillText('your gift is hiding under here', w / 2, h / 2 + 28);
+
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.lineCap = ctx.lineJoin = 'round';
+    ctx.lineWidth = 46;
+  }
+  function local(e) {
+    const r = c.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * (w / r.width), y: (e.clientY - r.top) * (h / r.height) };
+  }
+  function scratchTo(p, e) {
+    ctx.beginPath();
+    ctx.moveTo(last.x, last.y);
+    ctx.lineTo(p.x + .01, p.y);
+    ctx.stroke();
+    last = p;
+    if (Math.random() < .5) addPaper(e.clientX, e.clientY, rand(-90, 90), rand(-160, -40));
+  }
+  function cleared() {
+    const d = ctx.getImageData(0, 0, c.width, c.height).data;
+    let clear = 0, total = 0;
+    for (let i = 3; i < d.length; i += 4 * 23) { total++; if (d[i] < 40) clear++; }
+    return clear / total;
+  }
+  function check() { if (!revealed && cleared() > .5) reveal(); }
+  function reveal() {
+    revealed = true; down = false;
+    c.classList.add('gone');
+    $('#reveal-stack').classList.add('revealed');
+    sfx.fanfare();
+    celebrate(true);
+    setTimeout(() => { raining = true; }, 1200);
+    setTimeout(() => celebrate(false), 3200);
+  }
+
+  c.addEventListener('pointerdown', e => {
+    if (revealed) return;
+    down = true; last = local(e);
+    c.setPointerCapture && c.setPointerCapture(e.pointerId);
+    scratchTo(last, e);
+  });
+  c.addEventListener('pointermove', e => {
+    if (!down || revealed) return;
+    scratchTo(local(e), e);
+    if (++moves % 10 === 0) check();
+  });
+  const up = () => { if (down) { down = false; check(); } };
+  c.addEventListener('pointerup', up);
+  c.addEventListener('pointercancel', up);
+  return { setup };
+})();
+enter['s-reveal'] = scratch.setup;
+
+/* ---------- main loop ---------- */
+function resize() {
+  W = innerWidth; H = innerHeight;
+  ambCtx = fit(ambC); fxCtx = fit(fxC);
+  game.resize();
+  ambient = Array.from({ length: clamp(Math.round(W * H / 34000), 7, 18) }, () => newAmb(true));
+}
+addEventListener('resize', resize);
+resize();
+iconsReady.then(paintIcons);
+
+let lastT = performance.now();
+function loop(now) {
+  const dt = clamp((now - lastT) / 1000, 0, .05);
+  lastT = now; time += dt;
+
+  // floating paper stickers, faded back while the catch game is on so they don't look catchable
+  ambAlpha += ((game.active ? .22 : 1) - ambAlpha) * Math.min(1, dt * 3);
+  ambCtx.clearRect(0, 0, W, H);
+  ambCtx.globalAlpha = ambAlpha;
+  for (let i = 0; i < ambient.length; i++) {
+    const p = ambient[i];
+    p.y -= p.v * dt;
+    p.x += Math.sin(time * .7 + p.ph) * 10 * dt;
+    if (p.y < -60) { ambient[i] = newAmb(false); continue; }
+    drawSticker(ambCtx, p.name, p.size, p.x, p.y, p.r0 + Math.sin(time * .9 + p.ph) * .15);
+  }
+  ambCtx.globalAlpha = 1;
+
+  if (raining && Math.random() < dt * 5)
+    addSticker(rand(0, W), -30, rand(-15, 15), rand(50, 90), pick(['heart', 'daisy', 'star', 'sparkle', 'cherry']), pick([22, 28]),
+      { g: 0, drag: 0, decay: .1, vr: rand(-1, 1) });
+
+  fxCtx.clearRect(0, 0, W, H);
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.life -= p.decay * dt;
+    if (p.life <= 0 || p.y > H + 40) { parts.splice(i, 1); continue; }
+    p.vx *= 1 - p.drag * dt;
+    p.vy = p.vy * (1 - p.drag * dt * .5) + p.g * dt;
+    if (p.kind === 'paper') { p.vy = Math.min(p.vy, 150); p.flip += p.vf * dt; p.x += Math.sin(p.flip) * 25 * dt; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+    fxCtx.globalAlpha = Math.min(1, p.life * 2.5);
+    if (p.kind === 'paper') {
+      fxCtx.save();
+      fxCtx.translate(p.x, p.y); fxCtx.rotate(p.rot); fxCtx.scale(1, Math.cos(p.flip));
+      fxCtx.fillStyle = p.color; fxCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      fxCtx.lineWidth = 1.4; fxCtx.strokeStyle = INK; fxCtx.strokeRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      fxCtx.restore();
+    } else {
+      drawSticker(fxCtx, p.name, p.size, p.x, p.y, p.rot);
+    }
+  }
+  fxCtx.globalAlpha = 1;
+
+  if (game.active) game.tick(dt);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// testing shortcut: open index.html#s-quiz (or #s-gift, #s-reveal…) to jump straight to a screen
+if (location.hash && document.getElementById(location.hash.slice(1))) go(location.hash.slice(1));
+</script>
+</body>
+</html>
